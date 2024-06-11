@@ -9,5 +9,6 @@ services:
     volumes:
       - .:/app
       - ~/.m2:/root/.m2
+      - ./ext_lib:/usr/local/lib
     # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]
     command: ["sh", "-c", "while :; do sleep 2073600; done"]

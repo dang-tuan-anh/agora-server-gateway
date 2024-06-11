@@ -8,11 +8,12 @@ import io.agora.rtc.VideoDimensions;
 import io.agora.rtc.AgoraLocalVideoTrack;
 import io.agora.rtc.AgoraVideoFrameSender;
 import io.agora.rtc.VideoEncoderConfig;
+import io.agora.rtc.Constants;
 
 public class Main {
-    static {
-        System.load("/usr/local/lib/libagora_rtc_sdk.so"); // Ensure the native library is loaded
-    }
+    // static {
+    //     System.load("/app/ext_lib/libagora_rtc_sdk.so"); // Ensure the native library is loaded
+    // }
 
     private static final String APP_ID = "YOUR_APP_ID";
     private static final String APP_CERTIFICATE = "YOUR_APP_CERTIFICATE";
@@ -44,14 +45,14 @@ public class Main {
             AgoraLocalVideoTrack localVideoTrack = agoraService.createCustomVideoTrackFrame(videoFrameSender);
 
             // Set video encoder configuration
-            int codecType = 2;
             VideoDimensions dimensions = new VideoDimensions(640, 360);
+            int codecType = Constants.VIDEO_CODEC_H264;
             int frameRate = 24;
             int bitrate = 0;
             int minBitrate = 0;
-            int orientationMode = 0;
+            int orientationMode = Constants.VIDEO_ORIENTATION_0;
             int degradationPreference = 0;
-            int mirrorMode = 0;
+            int mirrorMode = Constants.VIDEO_MIRROR_MODE_AUTO;
             VideoEncoderConfig config = new VideoEncoderConfig(
                 codecType,
                 dimensions,
