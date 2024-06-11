@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  java_app:
+    build: .
+    container_name: agora_java_app
+    environment:
+      - LD_LIBRARY_PATH=/usr/local/lib
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]
+    command: ["sh", "-c", "while :; do sleep 2073600; done"]
