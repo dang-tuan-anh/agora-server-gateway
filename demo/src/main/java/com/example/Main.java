@@ -41,29 +41,21 @@ public class Main {
             // Set video encoder configuration
             VideoDimensions dimensions = new VideoDimensions(640, 360);
             int codecType = Constants.VIDEO_CODEC_H264;
-            int frameRate = 24;
-            int bitrate = 0;
-            int minBitrate = 0;
+            int frameRate = 30;
             int orientationMode = Constants.VIDEO_ORIENTATION_0;
-            int degradationPreference = 0;
-            int mirrorMode = Constants.VIDEO_MIRROR_MODE_AUTO;
-            VideoEncoderConfig config = new VideoEncoderConfig(
-                codecType,
-                dimensions,
-                frameRate,
-                bitrate,
-                minBitrate,
-                orientationMode,
-                degradationPreference,
-                mirrorMode
-            );
+            VideoEncoderConfig config = new VideoEncoderConfig();
+                config.setCodecType(codecType);
+                config.setDimensions(dimensions);
+                config.setFrameRate(frameRate);
+                config.setOrientationMode(orientationMode);
+            
             localVideoTrack.setVideoEncoderConfig(config);
 
             // Publish the local video track
             rtcConn.getLocalUser().publishVideo(localVideoTrack);
 
             // Read and send video frames from the H.264 file
-            // publishVideoFromH264(videoFrameSender, VIDEO_FILE_PATH);
+            publishVideoFromH264(videoFrameSender, VIDEO_FILE_PATH);
 
             // Leave the channel after use
             rtcConn.disconnect();
