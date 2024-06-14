@@ -1,6 +1,5 @@
 package com.example;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 
@@ -8,16 +7,14 @@ import io.agora.rtc.*;
 
 public class Main {
     static {
-        // System.loadLibrary("agora_rtc_sdk"); // Ensure the native library is loaded
         SDK.load();
-
     }
 
-    private static final String APP_ID = "YOUR_APP_ID";
-    private static final String APP_CERTIFICATE = "YOUR_APP_CERTIFICATE";
-    private static final String CHANNEL_NAME = "YOUR_CHANNEL_NAME";
+    private static final String APP_ID = "0b775ae52b9341baa9b46812b3b5cbae";
+    private static final String TOKEN = "007eJxTYDiSemkN+8x3lgo71jJ4rZ0UmnDsV93SS+uDgkzfh82+sNtNgcEgydzcNDHV1CjJ0tjEMCkx0TLJxMzC0CjJOMk0OSkxVfpddlpDICOD1Kw4FkYGCATxeRhSUnPz45MzEvPyUnMYGADa1CPx";
+    private static final String CHANNEL_NAME = "demo_channel";
     private static final String UID = "12345"; // Set your UID or use 0 for automatic assignment
-    private static final String VIDEO_FILE_PATH = "jane.mp4";
+    private static final String VIDEO_FILE_PATH = "send_video.h264";
 
     public static void main(String[] args) {
         System.out.println("App started");
@@ -33,17 +30,14 @@ public class Main {
             RtcConnConfig rtcConnConfig = new RtcConnConfig();
             AgoraRtcConn rtcConn = agoraService.agoraRtcConnCreate(rtcConnConfig);
 
-            // Generate token if necessary
-            String token = generateToken(APP_ID, APP_CERTIFICATE, CHANNEL_NAME, UID);
-
             // Join the channel
-            rtcConn.connect(token, CHANNEL_NAME, UID);
+            rtcConn.connect(TOKEN, CHANNEL_NAME, UID);
+            
             // Create and configure local video track
             AgoraMediaNodeFactory factory = agoraService.createMediaNodeFactory();
             AgoraVideoFrameSender videoFrameSender = factory.createVideoFrameSender();
-            // factory.createMediaPlayerSource(0)
             AgoraLocalVideoTrack localVideoTrack = agoraService.createCustomVideoTrackFrame(videoFrameSender);
-            
+
             // Set video encoder configuration
             VideoDimensions dimensions = new VideoDimensions(640, 360);
             int codecType = Constants.VIDEO_CODEC_H264;
@@ -64,36 +58,30 @@ public class Main {
                 mirrorMode
             );
             localVideoTrack.setVideoEncoderConfig(config);
+
             // Publish the local video track
             rtcConn.getLocalUser().publishVideo(localVideoTrack);
 
-            publishVideoFromMp4(videoFrameSender);
+            // Read and send video frames from the H.264 file
+            // publishVideoFromH264(videoFrameSender, VIDEO_FILE_PATH);
+
             // Leave the channel after use
             rtcConn.disconnect();
             agoraService.destroy();
-            // agoraService.dispose();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static String generateToken(String appId, String appCertificate, String channelName, String uid) {
-        // Token generation logic here, similar to the previous example
-        // This method should return a valid token
-        return "YOUR_TOKEN";
-    }
-
-    private static void publishVideoFromMp4(AgoraVideoFrameSender videoFrameSender) {
-        try {
-            // Open the MP4 file
-            File file = new File(VIDEO_FILE_PATH);
-            FileInputStream fis = new FileInputStream(file);
-
-            // Read and send each frame
+    private static void publishVideoFromH264(AgoraVideoFrameSender videoFrameSender, String videoFilePath) {
+        try (FileInputStream fis = new FileInputStream(videoFilePath)) {
             byte[] frameData = new byte[1024 * 1024]; // Adjust frame size if necessary
             int bytesRead;
+
             while ((bytesRead = fis.read(frameData)) != -1) {
-                ByteBuffer buffer = ByteBuffer.wrap(frameData, 0, bytesRead);
+                ByteBuffer buffer = ByteBuffer.allocateDirect(bytesRead);
+                buffer.put(frameData, 0, bytesRead);
+                buffer.flip();
 
                 // Create ExternalVideoFrame
                 ExternalVideoFrame externalVideoFrame = new ExternalVideoFrame();
@@ -101,15 +89,15 @@ public class Main {
                 externalVideoFrame.setStride(640); // Width of the video frame
                 externalVideoFrame.setHeight(360); // Height of the video frame
                 externalVideoFrame.setTimestamp(System.currentTimeMillis()); // Timestamp of the frame
-                externalVideoFrame.setBuffer(buffer); // Byte array containing video frame data
+                externalVideoFrame.setBuffer(buffer); // ByteBuffer containing video frame data
                 externalVideoFrame.setRotation(0); // Rotation of the video frame
 
                 // Send the frame to Agora
-                videoFrameSender.send(externalVideoFrame);
+                int result = videoFrameSender.send(externalVideoFrame);
+                if (result != 0) {
+                    System.err.println("Failed to send video frame: " + result);
+                }
             }
-
-            // Close streams
-            fis.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

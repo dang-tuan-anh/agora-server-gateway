@@ -1,5 +1,5 @@
 # Use an official OpenJDK runtime as a parent image
-FROM openjdk:11-jdk
+FROM mcr.microsoft.com/devcontainers/java:1-21-bullseye
 
 # Set the working directory
 WORKDIR /app
@@ -12,12 +12,14 @@ RUN apt-get update && \
     git \
     wget \
     unzip \
-    maven
+    maven \
+    libx11-dev \
+    libxfixes-dev \
+    libxext-dev \
+    libdrm-dev
 
 # Download and install Agora C++ SDK
-RUN wget -qO- https://download.agora.io/rtsasdk/release/Agora-RTC-x86_64-linux-gnu-v4.2.30-20240202_172130-292462.tgz | tar xvz -C /opt && \
-    cp -r /opt/agora_rtc_sdk/agora_sdk/* /usr/local/lib/ && \
-    ldconfig
+RUN ldconfig
 
 # Copy the current directory contents into the container at /app
 COPY . /app
@@ -26,8 +28,10 @@ COPY . /app
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 # Compile the Maven project
-RUN mvn clean package
+# RUN mvn clean package
 
+
+EXPOSE 5005
 # # Run the Java application
-CMD ["java", "-cp", "target/agora-example-1.0-SNAPSHOT.jar", "com.example.Main"]
+# CMD ["java", "-cp", "target/agora-example-1.0-SNAPSHOT.jar:target/lib", "com.example.Main"]
 # CMD ["sh", "-c", "while :; do sleep 2073600; done"]

@@ -1,0 +1,24 @@
+services:
+  java_app:
+    build: 
+      context: ./demo
+    environment:
+      - LD_LIBRARY_PATH=/usr/local/lib
+    volumes:
+      - ./demo:/app
+    # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]
+    command: ["sh", "-c", "while :; do sleep 2073600; done"]
+    ports:
+      - "5005:5005"
+    user: "1000:1000"
+  ubuntu:
+    build: 
+      context: ./ubuntu
+    environment:
+      - LD_LIBRARY_PATH=/usr/local/lib
+    volumes:
+      - ./ubuntu:/app
+    # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]
+    command: ["sh", "-c", "while :; do sleep 2073600; done"]
+    # ports:
+    #   - "5005:5005"
