@@ -35,8 +35,8 @@ public class Main {
             
             // Create and configure local video track
             AgoraMediaNodeFactory factory = agoraService.createMediaNodeFactory();
-            AgoraVideoFrameSender videoFrameSender = factory.createVideoFrameSender();
-            AgoraLocalVideoTrack localVideoTrack = agoraService.createCustomVideoTrackFrame(videoFrameSender);
+            AgoraVideoEncodedImageSender videoFrameSender = factory.createVideoEncodedImageSender();
+            AgoraLocalVideoTrack localVideoTrack = agoraService.createCustomVideoTrackEncoded(videoFrameSender, new SenderOptions());
 
             // Set video encoder configuration
             VideoDimensions dimensions = new VideoDimensions(640, 360);
@@ -65,7 +65,7 @@ public class Main {
         }
     }
 
-    private static void publishVideoFromH264(AgoraVideoFrameSender videoFrameSender, String videoFilePath) {
+    private static void publishVideoFromH264(AgoraVideoEncodedImageSender videoFrameSender, String videoFilePath) {
         try (FileInputStream fis = new FileInputStream(videoFilePath)) {
             byte[] frameData = new byte[1024 * 1024]; // Adjust frame size if necessary
             int bytesRead;
@@ -76,16 +76,21 @@ public class Main {
                 buffer.flip();
 
                 // Create ExternalVideoFrame
-                ExternalVideoFrame externalVideoFrame = new ExternalVideoFrame();
-                externalVideoFrame.setFormat(Constants.EXTERNAL_VIDEO_FRAME_PIXEL_FORMAT_RGBA);
-                externalVideoFrame.setStride(640); // Width of the video frame
-                externalVideoFrame.setHeight(360); // Height of the video frame
-                externalVideoFrame.setTimestamp(System.currentTimeMillis()); // Timestamp of the frame
-                externalVideoFrame.setBuffer(buffer); // ByteBuffer containing video frame data
-                externalVideoFrame.setRotation(0); // Rotation of the video frame
+                // ExternalVideoFrame externalVideoFrame = new ExternalVideoFrame();
+                // externalVideoFrame.setFormat(Constants.EXTERNAL_VIDEO_FRAME_PIXEL_FORMAT_RGBA);
+                // externalVideoFrame.setStride(640); // Width of the video frame
+                // externalVideoFrame.setHeight(360); // Height of the video frame
+                // externalVideoFrame.setTimestamp(System.currentTimeMillis()); // Timestamp of the frame
+                // externalVideoFrame.setBuffer(buffer); // ByteBuffer containing video frame data
+                // externalVideoFrame.setRotation(0); // Rotation of the video frame
+                EncodedVideoFrameInfo frameInfo = new EncodedVideoFrameInfo();
+                frameInfo.setRotation(Constants.VIDEO_ORIENTATION_0);
+                frameInfo.setCodecType(Constants.VIDEO_CODEC_H264);
+                frameInfo.setFramesPerSecond(30);
+                frameInfo.setFrameType(0);
 
                 // Send the frame to Agora
-                int result = videoFrameSender.send(externalVideoFrame);
+                int result = videoFrameSender.send(frameData, bytesRead, frameInfo);
                 if (result != 0) {
                     System.err.println("Failed to send video frame: " + result);
                 }
