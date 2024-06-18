@@ -3,6 +3,7 @@ Start docker
 ```
 docker-compose up
 ```
+Can also use dev container in vscode
 
 Go to demo (java_app) container
 ```
