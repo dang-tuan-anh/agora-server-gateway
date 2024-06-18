@@ -92,7 +92,7 @@ public class Main {
         }
     }
 
-    public static void stream(AgoraVideoEncodedImageSender sender) throws InterruptedException {
+    public static void stream(AgoraVideoEncodedImageSender sender) {
         String inputFilePath = VIDEO_FILE_PATH;
         FFMpegParser1.parse(inputFilePath, (dataInfo) -> {
             EncodedVideoFrameInfo info = new EncodedVideoFrameInfo();
@@ -103,19 +103,17 @@ public class Main {
             int result = sender.send(dataInfo.data, dataInfo.data.length, info);
             System.out.println(dataInfo.index + " send result: " + result + " size: " + dataInfo.data.length + " key: " + dataInfo.isKeyFrame);
 
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : dataInfo.data) {
-                hexString.append(String.format("%02X ", b));
+            // StringBuilder hexString = new StringBuilder();
+            // for (byte b : dataInfo.data) {
+            //     hexString.append(String.format("%02X ", b));
+            // }            // System.out.println(hexString.toString());
+            
+            try {
+                Thread.sleep(1000/30);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
-    
-            // // In chuỗi hexa ra màn hình
-            // System.out.println(hexString.toString());
-            // try {
-            //     Thread.sleep(1000/30);
-            // } catch (InterruptedException e) {
-            //     // TODO Auto-generated catch block
-            //     e.printStackTrace();
-            // }
 
         });
         // List<byte[]> frameDataList = decodeH264ToByteArrays(inputFilePath, sender);

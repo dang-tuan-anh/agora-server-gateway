@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 
 public class FFMpegParser1 {
 
-    public static void parse(String filePath,  Consumer<DataInfo> action) throws InterruptedException {
+    public static void parse(String filePath,  Consumer<DataInfo> action) {
         try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(filePath)) {
             grabber.start();
 
@@ -25,7 +25,6 @@ public class FFMpegParser1 {
                 DataInfo dataInfo = new DataInfo(index, dataBytes, isKeyFrame);
                 action.accept(dataInfo);
                 index++;
-                Thread.sleep(1000/30);
             }
 
             grabber.stop();
