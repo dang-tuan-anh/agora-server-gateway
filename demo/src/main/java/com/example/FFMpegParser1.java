@@ -3,7 +3,6 @@ package com.example;
 import org.bytedeco.ffmpeg.avcodec.AVPacket;
 import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber.Exception;
 import java.nio.ByteBuffer;
 import java.util.function.Consumer;
@@ -31,40 +30,6 @@ public class FFMpegParser1 {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private static byte[] getFrameBytes(Frame frame) {
-        int width = frame.imageWidth;
-        int height = frame.imageHeight;
-        int depth = frame.imageDepth;
-        int channels = frame.imageChannels;
-    
-        // Calculate buffer size
-        int bufferSize = width * height * channels * (depth / 8);
-    
-        // Get ByteBuffer from frame
-        ByteBuffer buffer = (ByteBuffer) frame.image[0];
-    
-        // Ensure buffer has enough remaining bytes
-        if (buffer.remaining() < bufferSize) {
-            throw new RuntimeException("Buffer does not contain enough data for the frame");
-        }
-    
-        // Create byte array to hold image data
-        byte[] imageBytes = new byte[bufferSize];
-    
-        // Save current buffer position
-        int currentPosition = buffer.position();
-    
-        try {
-            // Read data from ByteBuffer into byte array
-            buffer.get(imageBytes);
-        } finally {
-            // Restore buffer position to original
-            buffer.position(currentPosition);
-        }
-    
-        return imageBytes;
     }
 }
 
