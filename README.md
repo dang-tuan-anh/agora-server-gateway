@@ -16,5 +16,5 @@ Run the java app
 ./run.sh
 ```
 
-Using C++ SDK
+Using C++ SDK  
 https://docs.agora.io/en/server-gateway/get-started/integrate-sdk?platform=linux-cpp
