@@ -15,7 +15,8 @@
             "name": "Main",
             "request": "launch",
             "mainClass": "com.example.Main",
-            "projectName": "agora-example"
+            "projectName": "agora-example",
+            "javaExec": "/usr/lib/jvm/msopenjdk-current/bin/java"
         }
     ]
 }

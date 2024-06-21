@@ -11,7 +11,7 @@ public class Main {
     private static final String TOKEN = System.getenv("TOKEN");
     private static final String CHANNEL_NAME = "demo_channel";
     private static final String UID = ""; // blank is ok
-    private static final String VIDEO_FILE_PATH = "output1.h264";
+    private static final String VIDEO_FILE_PATH = "output.h264";
 
     public static void main(String[] args) {
         System.out.println("App started");
