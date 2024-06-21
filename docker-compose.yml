@@ -3,8 +3,8 @@ services:
     build: 
       context: ./demo
     environment:
-      - APP_ID=0b775ae52b9341baa9b46812b3b5cbae
-      - TOKEN="007eJxTYEhd7PDh35on9feaF15PvGGo3uGUayKu7DvDrJdXTTTreboCg0GSublpYqqpUZKlsYlhUmKiZZKJmYWhUZJxkmlyUmLq5PMlaQ2BjAz/Zn9kYIRCEJ+HISU1Nz8+OSMxLy81h4EBAH+KI6Q="
+      - APP_ID=${APP_ID}
+      - TOKEN=${TOKEN_ID}
     volumes:
       - ./demo:/app
     # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]
