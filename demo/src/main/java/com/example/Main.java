@@ -7,11 +7,11 @@ public class Main {
         SDK.load();
     }
 
-    private static final String APP_ID = "0b775ae52b9341baa9b46812b3b5cbae";
-    private static final String TOKEN = "007eJxTYEio2p63LDFyru+mCS/dJgS2GSkZF/yTXd50rubznl93ZucqMBgkmZubJqaaGiVZGpsYJiUmWiaZmFkYGiUZJ5kmJyWm6ukUpjUEMjJ8qdvIxMgAgSA+D0NKam5+fHJGYl5eag4DAwDZ4yRr";
+    private static final String APP_ID = System.getenv("APP_ID");
+    private static final String TOKEN = System.getenv("TOKEN");
     private static final String CHANNEL_NAME = "demo_channel";
     private static final String UID = ""; // blank is ok
-    private static final String VIDEO_FILE_PATH = "send_video.h264";
+    private static final String VIDEO_FILE_PATH = "output1.h264";
 
     public static void main(String[] args) {
         System.out.println("App started");
@@ -80,7 +80,7 @@ public class Main {
 
     public static void stream(AgoraVideoEncodedImageSender sender) {
         String inputFilePath = VIDEO_FILE_PATH;
-        FFMpegParser1.parse(inputFilePath, (dataInfo) -> {
+        H264Reader.readH264(inputFilePath, true, (dataInfo) -> {
             EncodedVideoFrameInfo info = new EncodedVideoFrameInfo();
             info.setCodecType(Constants.VIDEO_CODEC_H264);
             // info.setRotation(Constants.VIDEO_ORIENTATION_0);

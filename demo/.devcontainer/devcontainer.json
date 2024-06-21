@@ -3,7 +3,10 @@
 {
 	"name": "Java",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
+	// "image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
+	"build": {
+        "dockerfile": "dockerfile"
+    },
 
 	"features": {
 		"ghcr.io/devcontainers/features/java:1": {
@@ -12,7 +15,12 @@
 			"installGradle": "false"
 		},
 		"ghcr.io/devcontainers-contrib/features/wget-apt-get:1": {}
-	}
+	},
+
+	// "containerEnv": {
+	// 	"APP_ID": "",
+    //     "TOKEN": ""
+    // }
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

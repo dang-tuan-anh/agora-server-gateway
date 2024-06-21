@@ -3,7 +3,8 @@ services:
     build: 
       context: ./demo
     environment:
-      - LD_LIBRARY_PATH=/usr/local/lib
+      - APP_ID=0b775ae52b9341baa9b46812b3b5cbae
+      - TOKEN="007eJxTYEhd7PDh35on9feaF15PvGGo3uGUayKu7DvDrJdXTTTreboCg0GSublpYqqpUZKlsYlhUmKiZZKJmYWhUZJxkmlyUmLq5PMlaQ2BjAz/Zn9kYIRCEJ+HISU1Nz8+OSMxLy81h4EBAH+KI6Q="
     volumes:
       - ./demo:/app
     # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]
@@ -11,14 +12,14 @@ services:
     ports:
       - "5005:5005"
     user: "1000:1000"
-  ubuntu:
-    build: 
-      context: ./ubuntu
-    environment:
-      - LD_LIBRARY_PATH=/usr/local/lib
-    volumes:
-      - ./ubuntu:/app
-    # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]
-    command: ["sh", "-c", "while :; do sleep 2073600; done"]
-    # ports:
-    #   - "5005:5005"
+  # ubuntu:
+  #   build: 
+  #     context: ./ubuntu
+  #   environment:
+  #     - LD_LIBRARY_PATH=/usr/local/lib
+  #   volumes:
+  #     - ./ubuntu:/app
+  #   # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]
+  #   command: ["sh", "-c", "while :; do sleep 2073600; done"]
+  #   # ports:
+  #   #   - "5005:5005"

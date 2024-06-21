@@ -18,18 +18,16 @@ RUN apt-get update && \
     libxext-dev \
     libdrm-dev
 
-# Download and install Agora C++ SDK
-RUN ldconfig
-
-# Copy the current directory contents into the container at /app
+    # Copy the current directory contents into the container at /app
 COPY . /app
-
-# Set the environment variable for Java library path
-ENV LD_LIBRARY_PATH /usr/local/lib
-
+    
 # Compile the Maven project
-# RUN mvn clean package
-
+RUN mvn dependency:get -Dartifact=io.agora.rtc:linux-sdk:3.7.200.21 && \
+jar xf target/lib/linux-sdk-3.7.200.21.jar native
+    
+# Set the environment variable for Java library path
+ENV LD_LIBRARY_PATH="/usr/local/lib:native/linux/x86_64"
+RUN ldconfig
 
 EXPOSE 5005
 # # Run the Java application
