@@ -16,13 +16,15 @@ RUN apt-get update && \
     libx11-dev \
     libxfixes-dev \
     libxext-dev \
-    libdrm-dev
+    libdrm-dev && \
+    wget -O /tmp/libhsdis-amd64.so https://chriswhocodes.com/hsdis/hsdis-amd64.so
 
     # Copy the current directory contents into the container at /app
 COPY . /app
     
 # Compile the Maven project
-RUN mvn dependency:get -Dartifact=io.agora.rtc:linux-sdk:3.7.200.21 && \
+RUN cp /tmp/libhsdis-amd64.so /$JAVA_HOME/lib/server && \
+mvn dependency:get -Dartifact=io.agora.rtc:linux-sdk:3.7.200.21 && \
 jar xf target/lib/linux-sdk-3.7.200.21.jar native
     
 # Set the environment variable for Java library path

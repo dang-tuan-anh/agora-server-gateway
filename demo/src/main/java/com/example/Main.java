@@ -19,8 +19,9 @@ public class Main {
             // Initialize AgoraService
             AgoraServiceConfig serviceConfig = new AgoraServiceConfig();
             serviceConfig.setAppId(APP_ID);
+            serviceConfig.setEnableAudioDevice(0);
+            serviceConfig.setEnableAudioProcessor(1);
             serviceConfig.setEnableVideo(1);
-            // serviceConfig.setAreaCode(0);
             AgoraService agoraService = new AgoraService();
             agoraService.setLogFilter(Constants.LOG_FILTER_INFO);
             agoraService.initialize(serviceConfig);
@@ -30,16 +31,22 @@ public class Main {
             rtcConnConfig.setAutoSubscribeAudio(0);
             rtcConnConfig.setAutoSubscribeVideo(0);
             rtcConnConfig.setClientRoleType(Constants.CLIENT_ROLE_BROADCASTER);
-
             AgoraRtcConn rtcConn = agoraService.agoraRtcConnCreate(rtcConnConfig);
-            
-                    // Create and configure local video track
             AgoraMediaNodeFactory factory = agoraService.createMediaNodeFactory();
+            
+            // Create and configure local audio track
+            AgoraAudioPcmDataSender audioFrameSender = factory.createAudioPcmDataSender();
+            AgoraLocalAudioTrack localAudioTrack = agoraService.createCustomAudioTrackPcm(audioFrameSender);
+            localAudioTrack.setEnabled(1);
+            // // Set audio encoder configuration
+            // int sampleRate = 48000;
+            // int channelCount = 2;
+            // int bitRate = 64000;
+            
+            
+            // Create and configure local video track
             AgoraVideoEncodedImageSender videoFrameSender = factory.createVideoEncodedImageSender();
             AgoraLocalVideoTrack localVideoTrack = agoraService.createCustomVideoTrackEncoded(videoFrameSender, new SenderOptions());
-
-            // Set video encoder configuration
-            // VideoDimensions dimensions = new VideoDimensions(640, 360);
             int codecType = Constants.VIDEO_CODEC_H264;
             int frameRate = 30;
             int orientationMode = Constants.VIDEO_ORIENTATION_0;
@@ -48,12 +55,14 @@ public class Main {
             // config.setDimensions(dimensions);
             config.setFrameRate(frameRate);
             config.setOrientationMode(orientationMode);
-            
             localVideoTrack.setVideoEncoderConfig(config);
 
-            // Publish the local video track
-            int result = rtcConn.getLocalUser().publishVideo(localVideoTrack);
+            int result = 0;
+            result = rtcConn.getLocalUser().publishAudio(localAudioTrack);
+            System.out.println("Publish audio result: " + result);
+            result = rtcConn.getLocalUser().publishVideo(localVideoTrack);
             System.out.println("Publish result: " + result);
+           
             rtcConn.registerObserver(new DefaultRtcConnObserver() {
                 @Override
                 public void onConnected(AgoraRtcConn agora_rtc_conn, RtcConnInfo conn_info, int reason) {
@@ -65,7 +74,7 @@ public class Main {
             // Join the channel
             result = rtcConn.connect(TOKEN, CHANNEL_NAME, UID);
             System.out.println("Conneted result: " + result);
-            Thread.sleep(1000 * 60 * 5);
+            Thread.sleep(1000 * 60 * 5); // wait for 5 minutes
             // Leave the channel after use
             // rtcConn.disconnect();
             // agoraService.destroy();
