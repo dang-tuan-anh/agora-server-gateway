@@ -4,7 +4,7 @@ services:
       context: ./demo
     environment:
       - APP_ID=${APP_ID}
-      - TOKEN=${TOKEN_ID}
+      - TOKEN=${TOKEN}
     volumes:
       - ./demo:/app
     # command: ["java", "-cp", "target/my-project-1.0-SNAPSHOT.jar", "com.example.Main"]

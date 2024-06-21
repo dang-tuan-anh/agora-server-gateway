@@ -23,9 +23,10 @@ RUN apt-get update && \
 COPY . /app
     
 # Compile the Maven project
-RUN cp /tmp/libhsdis-amd64.so /$JAVA_HOME/lib/server && \
-mvn dependency:get -Dartifact=io.agora.rtc:linux-sdk:3.7.200.21 && \
-jar xf target/lib/linux-sdk-3.7.200.21.jar native
+RUN cp /tmp/libhsdis-amd64.so $JAVA_HOME/lib/server && \
+mvn dependency:get -Dartifact=io.agora.rtc:linux-sdk:3.7.200.21
+
+RUN jar xf target/lib/linux-sdk-3.7.200.21.jar native
     
 # Set the environment variable for Java library path
 ENV LD_LIBRARY_PATH="/usr/local/lib:native/linux/x86_64"
