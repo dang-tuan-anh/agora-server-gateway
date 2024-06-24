@@ -2,6 +2,7 @@ package com.example;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.agora.rtc.*;
 
@@ -14,7 +15,7 @@ public class Main {
     private static final String TOKEN = System.getenv("TOKEN");
     private static final String CHANNEL_NAME = "demo_channel";
     private static final String UID = ""; // blank is ok
-    private static final String VIDEO_FILE_PATH = "output.h264";
+    private static final String VIDEO_FILE_PATH = "jane_no_speak.h264";
 
     public static void main(String[] args) {
         System.out.println("App started");
@@ -76,12 +77,18 @@ public class Main {
                             streamVideo(videoFrameSender);
                         }
                     });
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            streamAudio(audioFrameSender);
+                        }
+                    });
                 }
             });
 
             // Join the channel
             result = rtcConn.connect(TOKEN, CHANNEL_NAME, UID);
-            System.out.println("Conneted result: " + result);
+            System.out.println("Connected result: " + result);
             Thread.sleep(1000 * 60 * 5); // wait for 5 minutes
             // Leave the channel after use
             // rtcConn.disconnect();
@@ -95,9 +102,35 @@ public class Main {
         }
     }
 
+    interface IAudioStreamer {
+        int sendAudioPcmData(byte[] frameBuf, int offset, int samplesPer10ms, int bytesPerSample, int numOfChannels, int sampleRate);
+    }
+    static int audioIndex = 0;
     public static void streamAudio(AgoraAudioPcmDataSender sender) {
-        String inputFilePath = "output.pcm";
-        AudioStreamer audioStreamer = new AudioStreamer(new AudioStreamer.SampleOptions(new AudioStreamer.AudioOptions(1, 16000), inputFilePath));
+        String inputFilePath = "send_audio_16k_1ch.pcm";
+        AudioReader audioReader = new AudioReader();
+        AudioOptions options = new AudioOptions();
+        options.audioFile = inputFilePath;
+        options.interval = 100;
+        options.numOfChannels = 1;
+        options.sampleRate = 16000;
+
+        IAudioStreamer audioStreamer = new IAudioStreamer() {
+            @Override
+            public int sendAudioPcmData(byte[] frameBuf, int captureTimestamp, int samplesPer10ms, int bytesPerSample, int numOfChannels, int sampleRate) {
+                int result = sender.send(frameBuf, captureTimestamp, samplesPer10ms, bytesPerSample, numOfChannels, sampleRate);
+                // System.out.println("audioIndex: " + audioIndex + " size: " + frameBuf.length + " result: " + result);
+                StringBuilder hexString = new StringBuilder();
+                for (int i = 0; i < frameBuf.length; i++) {
+                    hexString.append(String.format("%02X ", frameBuf[i]));
+                }
+                System.out.println(hexString.toString());
+                audioIndex++;
+                return result;
+            }
+        };
+
+        audioReader.sampleSendAudioTask(options, audioStreamer, new AtomicBoolean());
     }
 
     public static void streamVideo(AgoraVideoEncodedImageSender sender) {
@@ -109,7 +142,7 @@ public class Main {
             info.setFramesPerSecond(30);
             info.setFrameType(dataInfo.isKeyFrame ? Constants.VIDEO_FRAME_TYPE_KEY_FRAME : Constants.VIDEO_FRAME_TYPE_DELTA_FRAME);
             int result = sender.send(dataInfo.data, dataInfo.data.length, info);
-            System.out.println(dataInfo.index + " send result: " + result + " size: " + dataInfo.data.length + " key: " + dataInfo.isKeyFrame);
+            
 
             // StringBuilder hexString = new StringBuilder();
             // for (byte b : dataInfo.data) {
@@ -119,7 +152,6 @@ public class Main {
             try {
                 Thread.sleep(1000/30);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
 

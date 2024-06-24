@@ -8,7 +8,9 @@
             "type": "java",
             "name": "Current File",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "${file}",
+            "javaExec": "/usr/lib/jvm/msopenjdk-current/bin/java"
+
         },
         {
             "type": "java",
