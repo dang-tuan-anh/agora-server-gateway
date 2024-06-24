@@ -1,5 +1,8 @@
 package com.example;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import io.agora.rtc.*;
 
 public class Main {
@@ -62,12 +65,17 @@ public class Main {
             System.out.println("Publish audio result: " + result);
             result = rtcConn.getLocalUser().publishVideo(localVideoTrack);
             System.out.println("Publish result: " + result);
-           
+            ExecutorService executorService = Executors.newFixedThreadPool(2);
             rtcConn.registerObserver(new DefaultRtcConnObserver() {
                 @Override
                 public void onConnected(AgoraRtcConn agora_rtc_conn, RtcConnInfo conn_info, int reason) {
                     System.out.println("Connected");
-                    stream(videoFrameSender);
+                    executorService.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            streamVideo(videoFrameSender);
+                        }
+                    });
                 }
             });
 
@@ -87,7 +95,12 @@ public class Main {
         }
     }
 
-    public static void stream(AgoraVideoEncodedImageSender sender) {
+    public static void streamAudio(AgoraAudioPcmDataSender sender) {
+        String inputFilePath = "output.pcm";
+        AudioStreamer audioStreamer = new AudioStreamer(new AudioStreamer.SampleOptions(new AudioStreamer.AudioOptions(1, 16000), inputFilePath));
+    }
+
+    public static void streamVideo(AgoraVideoEncodedImageSender sender) {
         String inputFilePath = VIDEO_FILE_PATH;
         H264Reader.readH264(inputFilePath, true, (dataInfo) -> {
             EncodedVideoFrameInfo info = new EncodedVideoFrameInfo();
