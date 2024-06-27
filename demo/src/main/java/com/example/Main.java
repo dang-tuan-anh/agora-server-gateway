@@ -103,9 +103,8 @@ public class Main {
     }
 
     interface IAudioStreamer {
-        int sendAudioPcmData(byte[] frameBuf, int offset, int samplesPer10ms, int bytesPerSample, int numOfChannels, int sampleRate);
+        int sendAudioPcmData(byte[] frameBuf, int captureTimestamp, int samplesPer10ms, int bytesPerSample, int numOfChannels, int sampleRate);
     }
-    static int audioIndex = 0;
     public static void streamAudio(AgoraAudioPcmDataSender sender) {
         String inputFilePath = "send_audio_16k_1ch.pcm";
         AudioReader audioReader = new AudioReader();
@@ -119,18 +118,17 @@ public class Main {
             @Override
             public int sendAudioPcmData(byte[] frameBuf, int captureTimestamp, int samplesPer10ms, int bytesPerSample, int numOfChannels, int sampleRate) {
                 int result = sender.send(frameBuf, captureTimestamp, samplesPer10ms, bytesPerSample, numOfChannels, sampleRate);
-                // System.out.println("audioIndex: " + audioIndex + " size: " + frameBuf.length + " result: " + result);
-                StringBuilder hexString = new StringBuilder();
-                for (int i = 0; i < frameBuf.length; i++) {
-                    hexString.append(String.format("%02X ", frameBuf[i]));
-                }
-                System.out.println(hexString.toString());
-                audioIndex++;
+                // StringBuilder hexString = new StringBuilder();
+                // for (byte sample : frameBuf) {
+                //    hexString.append(String.format("%02X ", sample));
+                // }
+                // System.out.println(hexString.toString());
                 return result;
             }
         };
 
         audioReader.sampleSendAudioTask(options, audioStreamer, new AtomicBoolean());
+        // audioReader.sendUsingByteBuffer(options, audioStreamer, new AtomicBoolean());
     }
 
     public static void streamVideo(AgoraVideoEncodedImageSender sender) {
