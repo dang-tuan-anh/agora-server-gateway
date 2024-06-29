@@ -8,7 +8,8 @@
             "type": "java",
             "name": "Current File",
             "request": "launch",
-            "mainClass": "${file}"
+            "mainClass": "${file}",
+            "javaExec": "/usr/lib/jvm/msopenjdk-current/bin/java"
         },
         {
             "type": "java",
@@ -17,6 +18,41 @@
             "mainClass": "com.example.Main",
             "projectName": "agora-example",
             "javaExec": "/usr/lib/jvm/msopenjdk-current/bin/java"
+        },
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/agora_rtc_sdk/example/out/sample_send_h264_pcm",
+            "args": ["--token", "007eJxTYND7WrZz2Y6oWTIru5iq/xduXhMpseGwyJozJo+Xr4u/9G6hAoNBkrm5aWKqqVGSpbGJYVJiomWSiZmFoVGScZJpclJiag9fXVpDICPD1OjtrIwMEAji8zCkpObmxydnJOblpeYwMAAAGUUk5w==",
+                        "--channelId", "demo_channel",
+                        "--watchDirectory", "test_data"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/agora_rtc_sdk/example/out",
+            "environment": [
+                {
+                    "name": "LD_LIBRARY_PATH",
+                    "value": "/app/agora_rtc_sdk/agora_sdk:$LD_LIBRARY_PATH"
+                }
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "sourceFileMap":{
+                "/app/agora_rtc_sdk/example": "${workspaceFolder}/agora_rtc_sdk/example"
+            }
         }
     ]
 }
