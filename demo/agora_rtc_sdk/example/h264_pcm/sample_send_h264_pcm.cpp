@@ -224,6 +224,9 @@ static void SampleSendVideoH264Task(
       sendOneH264Frame(options.video.frameRate, std::move(h264Frame), videoH264FrameSender);
       waitBeforeNextSend(pacer);  // sleep for a while before sending next frame
     }
+    else {
+      break;
+    }
   };
 }
 
