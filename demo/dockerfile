@@ -16,7 +16,8 @@ RUN apt-get update && \
     libx11-dev \
     libxfixes-dev \
     libxext-dev \
-    libdrm-dev && \
+    libdrm-dev \
+    gdb && \
     wget -O /tmp/libhsdis-amd64.so https://chriswhocodes.com/hsdis/hsdis-amd64.so
 
     # Copy the current directory contents into the container at /app
@@ -29,7 +30,8 @@ mvn dependency:get -Dartifact=io.agora.rtc:linux-sdk:3.7.200.21
 RUN jar xf target/lib/linux-sdk-3.7.200.21.jar native
     
 # Set the environment variable for Java library path
-ENV LD_LIBRARY_PATH="/usr/local/lib:native/linux/x86_64"
+ENV LD_LIBRARY_PATH=/app/agora_rtc_sdk/agora_sdk:$LD_LIBRARY_PATH
+
 RUN ldconfig
 
 EXPOSE 5005
