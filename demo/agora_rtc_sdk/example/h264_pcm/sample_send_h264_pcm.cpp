@@ -252,6 +252,7 @@ static void watchDirectory(SampleOptions& options,
     char buffer[bufLen];
 
     while (!exitFlag) {
+        AG_LOG(INFO, "Watching directory:%s", options.watchDirectory.c_str());
         int length = read(inotifyFd, buffer, bufLen);
         if (length < 0) {
             std::cerr << "Error reading inotify events" << std::endl;
