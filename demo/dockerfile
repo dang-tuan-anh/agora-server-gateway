@@ -26,13 +26,14 @@ COPY . /app
 # Compile the Maven project
 RUN cp /tmp/libhsdis-amd64.so $JAVA_HOME/lib/server; \
     mvn package; \
-    jar xf /app/target/lib/linux-sdk-3.7.200.21.jar native
+    jar xf /app/target/lib/linux-sdk-3.7.200.21.jar -C /usr/lib native; \
+    cp native/linux/x86_64/* /usr/lib 
 # RUN jar xf /app/target/lib/linux-sdk-3.7.200.21.jar native
     
 # Set the environment variable for Java library path
 ENV LD_LIBRARY_PATH=/app/agora_rtc_sdk/agora_sdk:$LD_LIBRARY_PATH
 
-RUN ldconfig
+# RUN ldconfig
 
 EXPOSE 5005
 # # Run the Java application
