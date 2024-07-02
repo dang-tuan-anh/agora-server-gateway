@@ -27,7 +27,7 @@ public class Main {
             serviceConfig.setEnableAudioProcessor(1);
             serviceConfig.setEnableVideo(1);
             AgoraService agoraService = new AgoraService();
-            agoraService.setLogFilter(Constants.LOG_FILTER_INFO);
+            // agoraService.setLogFilter(Constants.LOG_FILTER_INFO);
             agoraService.initialize(serviceConfig);
 
             // Create RTC connection
