@@ -17,7 +17,8 @@
             "request": "launch",
             "mainClass": "com.example.Main",
             "projectName": "agora-example",
-            "javaExec": "/usr/lib/jvm/msopenjdk-current/bin/java"
+            "javaExec": "/usr/lib/jvm/msopenjdk-current/bin/java",
+            "vmArgs": "-Djava.library.path=native/linux/x86_64"
         },
         {
             "name": "(gdb) Launch",
