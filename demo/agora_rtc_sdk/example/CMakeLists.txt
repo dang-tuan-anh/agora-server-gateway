@@ -39,6 +39,7 @@ link_libraries(${LIB_SDK} ${LIB_THREAD})
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/out/)
 
+# Build apps
 subdirlist(SUBDIRS ${CMAKE_SOURCE_DIR})
 foreach(subdir ${SUBDIRS})
   if(EXISTS ${CMAKE_SOURCE_DIR}/${subdir}/CMakeLists.txt)
