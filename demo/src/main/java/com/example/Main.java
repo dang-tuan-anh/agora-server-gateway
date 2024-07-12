@@ -16,6 +16,7 @@ public class Main {
     private static final String CHANNEL_NAME = "demo_channel";
     private static final String UID = ""; // blank is ok
     private static final String VIDEO_FILE_PATH = "jane_no_speak.h264";
+    private static final String inputFilePath = "/app/agora_rtc_sdk/example/out/test_data/assistant_240712_180305.pcm";
 
     public static void main(String[] args) {
         System.out.println("App started");
@@ -106,7 +107,6 @@ public class Main {
         int sendAudioPcmData(byte[] frameBuf, int captureTimestamp, int samplesPer10ms, int bytesPerSample, int numOfChannels, int sampleRate);
     }
     public static void streamAudio(AgoraAudioPcmDataSender sender) {
-        String inputFilePath = "send_audio_16k_1ch.pcm";
         AudioReader audioReader = new AudioReader();
         AudioOptions options = new AudioOptions();
         options.audioFile = inputFilePath;
